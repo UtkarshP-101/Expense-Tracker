@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+  />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/static/register.css" />
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="title">Register Form</div>
+
+    <form action="/register" method="POST">
+
+      <div class="row">
+        <i class="fas fa-user"></i>
+        <input type="text" name="email" placeholder="Email" required />
+      </div>
+
+      <div class="row">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" placeholder="Password" required />
+      </div>
+
+      <div class="row button">
+        <input type="submit" value="Register" />
+      </div>
+
+      <div class="row button">
+        <a href="/login" class="login-btn">Login</a>
+      </div>
+
+    </form>
+  </div>
+
+</body>
+</html>
