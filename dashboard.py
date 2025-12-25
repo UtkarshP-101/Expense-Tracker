@@ -5,9 +5,7 @@ from datetime import datetime
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
-# =====================
-# Expense Model
-# =====================
+
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
@@ -16,18 +14,10 @@ class Expense(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
-# =====================
-# Dashboard Route
-# =====================
 @dashboard_bp.route("/dashboard/<name>")
 @token_required
 def dashboard(current_user, name):
-    """
-    current_user comes from token_required (JWT)
-    name comes from the URL (/dashboard/<name>)
-    """
-
-    # 🔐 Security check: URL name must match logged-in user
+    
     if current_user.name != name:
         return redirect(f"/dashboard/{current_user.name}")
 
@@ -40,11 +30,7 @@ def dashboard(current_user, name):
         user=current_user,
         expenses=expenses
     )
-
-
-# =====================
-# Add Expense Route
-# =====================
+ 
 @dashboard_bp.route("/add_expense", methods=["GET", "POST"])
 @token_required
 def add_expense(current_user):
@@ -61,8 +47,39 @@ def add_expense(current_user):
 
         return redirect(f"/dashboard/{current_user.name}")
 
-    return render_template("add_expense.html")
+    return render_template("add_expense.html", user=current_user)
 
+
+@dashboard_bp.route("/delete_expense/<int:expense_id>", methods=["POST"])
+@token_required
+def delete_expense(current_user, expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+
+    if expense.user_id != current_user.id:
+        return redirect(f"/dashboard/{current_user.name}")
+
+    db.session.delete(expense)
+    db.session.commit()
+
+    return redirect(f"/dashboard/{current_user.name}")
+
+@dashboard_bp.route("/edit_expense/<int:expense_id>", methods=["GET", "POST"])
+@token_required
+def edit_expense(current_user, expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+
+    if expense.user_id != current_user.id:
+        return redirect(f"/dashboard/{current_user.name}")
+
+    if request.method == "POST":
+        expense.amount = float(request.form["amount"])
+        expense.description = request.form["description"]
+
+        db.session.commit()
+
+        return redirect(f"/dashboard/{current_user.name}")
+
+    return render_template("edit_expense.html", user=current_user, expense=expense)
 
 @dashboard_bp.route("/logout", methods=["GET", "POST"])
 def logout():
