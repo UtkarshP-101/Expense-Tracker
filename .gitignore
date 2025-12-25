@@ -8,7 +8,7 @@ __pycache__/
 
 # Flask
 instance/
-
+oldapp.py
 # VS Code
 .vscode/
 instance/
