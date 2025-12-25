@@ -12,8 +12,8 @@ class Expense(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-@dashboard_bp.route("/dashboard")
-def dashboard():
+@dashboard_bp.route("/dashboard/<name>")
+def dashboard(name):
     if "user_id" not in session:
         return redirect("/login")
 
