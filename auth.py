@@ -75,12 +75,6 @@ def login():
 
     return render_template("login.html")
 
-@auth_bp.route("/logout")
-def logout():
-    response = make_response(redirect("/login"))
-    response.delete_cookie("access_token")
-    return response
-
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
