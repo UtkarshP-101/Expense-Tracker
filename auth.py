@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, session
-from app import db
+from flask import Blueprint, render_template, request, redirect, session,jsonify
+from extensions import db
 import bcrypt
+from werkzeug.security import generate_password_hash
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -9,18 +10,11 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = bcrypt.hashpw(
-            password.encode('utf-8'),
-            bcrypt.gensalt()
-        ).decode('utf-8')
+    def __repr__(self):
+        return f"<User {self.email}>"
 
-    def check_password(self, password):
-        return bcrypt.checkpw(
-            password.encode('utf-8'),
-            self.password.encode('utf-8')
-        )
+    def generate_password_hash(self, password):
+        self.password = generate_password_hash(password)
 
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():

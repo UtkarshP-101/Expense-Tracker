@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session
-from app import db
+from extensions import db
 from auth import User
 from datetime import datetime
 
